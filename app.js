@@ -302,3 +302,71 @@ searchInput.addEventListener('input', () => {
   );
   renderTable(filtered);
 });
+
+
+
+// ==========================================
+// EXPIRY TRACKER ENGINE: SAVE TO FIRESTORE
+// ==========================================
+async function saveNewExpiryRecord(projectName, inputExpiryDate, userAlertDays) {
+    try {
+        const targetExpiryDate = new Date(inputExpiryDate);
+        // Ensure the expiration time marks the absolute end of that calendar day
+        targetExpiryDate.setHours(23, 59, 59, 999);
+
+        // Using your initialized 'db' instance from line 12
+        const docRef = await db.collection("expiry_records").add({
+            name: projectName,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(), // Safe server clock
+            expiresAt: firebase.firestore.Timestamp.fromDate(targetExpiryDate), // Firestore Timestamp format
+            alertDays: parseInt(userAlertDays) || 7 
+        });
+
+        console.log("Record locked into cloud ledger successfully. ID:", docRef.id);
+        return true;
+    } catch (error) {
+        console.error("Error writing data matrix to Firebase:", error);
+        return false;
+    }
+}
+
+// ==========================================
+// EXPIRY TRACKER ENGINE: EVALUATE STATUS
+// ==========================================
+function evaluateProjectStatus(expiresAtFirebaseTimestamp, alertDaysWindow) {
+    const now = new Date();
+    
+    // Convert the Firestore Timestamp object safely back to a JavaScript Date object
+    const expiryDate = expiresAtFirebaseTimestamp.toDate(); 
+    const timeDifferenceMs = expiryDate - now;
+    const daysRemaining = Math.ceil(timeDifferenceMs / (1000 * 60 * 60 * 24));
+
+    if (daysRemaining <= 0) {
+        return {
+            label: "Expired",
+            badgeClass: "bg-red-100 text-red-800 border-red-300",
+            rowStyle: "opacity-70 bg-red-50/30",
+            daysText: `Expired ${Math.abs(daysRemaining)} days ago`
+        };
+    } 
+    
+    if (daysRemaining <= alertDaysWindow) {
+        return {
+            label: "Expiring Soon",
+            badgeClass: "bg-amber-100 text-amber-800 border-amber-300 animate-pulse",
+            rowStyle: "bg-amber-50/40",
+            daysText: `${daysRemaining} days left`
+        };
+    }
+
+    return {
+        label: "Active",
+        badgeClass: "bg-emerald-100 text-emerald-800 border-emerald-300",
+        rowStyle: "bg-white",
+        daysText: `${daysRemaining} days left`
+    };
+}
+
+// Make them accessible globally across your application
+window.saveNewExpiryRecord = saveNewExpiryRecord;
+window.evaluateProjectStatus = evaluateProjectStatus;
