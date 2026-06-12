@@ -85,14 +85,18 @@ function startListening() {
       snapshot.forEach(doc => {
         const data = doc.data();
         const today = new Date();
-        const monthsLeft = monthsBetween(today, data.expiry_date);
+        const { months, days, totalMonths } = computeTimeRemaining(today, data.expiry_date);
         products.push({
           id: doc.id,
           product_name: data.product_name,
           batch_number: data.batch_number,
           mfg_date: data.mfg_date,
           expiry_date: data.expiry_date,
-          months_left: monthsLeft
+          months_left: totalMonths,
+          months,
+          days,
+          inward: data.inward || 0,
+          outward: data.outward || 0
         });
       });
       updateDashboard();
@@ -102,10 +106,20 @@ function startListening() {
     });
 }
 
-function monthsBetween(startDate, endDate) {
+function computeTimeRemaining(startDate, endDate) {
   const start = new Date(startDate);
   const end = new Date(endDate);
-  return (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+  start.setHours(0, 0, 0, 0);
+  end.setHours(0, 0, 0, 0);
+  let months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+  let days = end.getDate() - start.getDate();
+  if (days < 0) {
+    months--;
+    const prevMonth = new Date(end.getFullYear(), end.getMonth(), 0);
+    days = prevMonth.getDate() + days;
+  }
+  const totalMonths = months + days / 30.0;
+  return { months, days, totalMonths };
 }
 
 function formatDate(dateStr) {
@@ -122,11 +136,9 @@ function getBadgeClass(months) {
   return 'badge-safe';
 }
 
-function getBadgeLabel(months) {
+function getBadgeLabel(months, days) {
   if (months < 0) return 'Expired';
-  if (months === 0) return 'This month';
-  if (months === 1) return '1 month';
-  return `${months} months`;
+  return `${months} months ${days} days`;
 }
 
 function updateDashboard() {
@@ -139,12 +151,13 @@ function updateDashboard() {
 function renderTable(filteredProducts) {
   const data = filteredProducts || products;
   if (data.length === 0) {
-    productsBody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><p>No products found. Add your first product!</p></div></td></tr>';
+    productsBody.innerHTML = '<tr><td colspan="10"><div class="empty-state"><p>No products found. Add your first product!</p></div></td></tr>';
     return;
   }
   productsBody.innerHTML = data.map(p => {
     const rowClass = p.months_left < 8.5 ? 'class="alert-danger-row"' : '';
     const shortId = p.id.length > 8 ? p.id.substring(0, 8) + '...' : p.id;
+    const balance = p.inward - p.outward;
     return `
     <tr ${rowClass}>
       <td title="${escapeHtml(p.id)}">${escapeHtml(shortId)}</td>
@@ -152,7 +165,10 @@ function renderTable(filteredProducts) {
       <td>${escapeHtml(p.batch_number)}</td>
       <td>${formatDate(p.mfg_date)}</td>
       <td>${formatDate(p.expiry_date)}</td>
-      <td><span class="badge ${getBadgeClass(p.months_left)}">${getBadgeLabel(p.months_left)}</span></td>
+      <td><span class="badge ${getBadgeClass(p.months_left)}">${getBadgeLabel(p.months, p.days)}</span></td>
+      <td>${p.inward}</td>
+      <td>${p.outward}</td>
+      <td>${balance}</td>
       <td>
         <button class="btn btn-edit" onclick="editProduct('${p.id}')">Edit</button>
         <button class="btn btn-danger" onclick="deleteProduct('${p.id}')">Delete</button>
@@ -181,6 +197,8 @@ function openModal(product = null) {
     document.getElementById('batch_number').value = product.batch_number;
     document.getElementById('mfg_date').value = product.mfg_date;
     document.getElementById('expiry_date').value = product.expiry_date;
+    document.getElementById('inward').value = product.inward || 0;
+    document.getElementById('outward').value = product.outward || 0;
   } else {
     modalTitle.textContent = 'Add Product';
     submitBtn.textContent = 'Save Product';
@@ -211,6 +229,8 @@ productForm.addEventListener('submit', async (e) => {
   const batch_number = document.getElementById('batch_number').value.trim();
   const mfg_date = document.getElementById('mfg_date').value;
   const expiry_date = document.getElementById('expiry_date').value;
+  const inward = parseInt(document.getElementById('inward').value) || 0;
+  const outward = parseInt(document.getElementById('outward').value) || 0;
   const id = productIdInput.value;
 
   if (!product_name || !batch_number || !mfg_date || !expiry_date) {
@@ -233,7 +253,9 @@ productForm.addEventListener('submit', async (e) => {
         product_name,
         batch_number,
         mfg_date,
-        expiry_date
+        expiry_date,
+        inward,
+        outward
       });
     } else {
       await db.collection('products').add({
@@ -241,6 +263,8 @@ productForm.addEventListener('submit', async (e) => {
         batch_number,
         mfg_date,
         expiry_date,
+        inward,
+        outward,
         userId: currentUser.uid,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });

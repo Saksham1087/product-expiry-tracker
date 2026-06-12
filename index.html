@@ -79,6 +79,16 @@
               <input type="date" id="expiry_date" required>
             </div>
           </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="inward">Inward Stock</label>
+              <input type="number" id="inward" min="0" value="0" placeholder="Total quantity received">
+            </div>
+            <div class="form-group">
+              <label for="outward">Outward Stock</label>
+              <input type="number" id="outward" min="0" value="0" placeholder="Total quantity dispatched">
+            </div>
+          </div>
           <div class="form-actions">
             <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
             <button type="submit" class="btn btn-primary" id="submitBtn">Save Product</button>
@@ -105,6 +115,9 @@
               <th>Mfg Date</th>
               <th>Expiry Date</th>
               <th>Months Left</th>
+              <th>Inward</th>
+              <th>Outward</th>
+              <th>Balance Stock</th>
               <th>Actions</th>
             </tr>
           </thead>
