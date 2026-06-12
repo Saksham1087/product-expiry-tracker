@@ -304,3 +304,92 @@ searchInput.addEventListener('input', () => {
   );
   renderTable(filtered);
 });
+
+document.getElementById('themeToggle').addEventListener('click', () => {
+  document.body.classList.toggle('dark');
+  localStorage.setItem('darkMode', document.body.classList.contains('dark'));
+});
+
+document.getElementById('btn-export-json').addEventListener('click', () => {
+  const data = JSON.stringify(products, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'expiry_tracker_master_backup.json';
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById('btn-import-json').addEventListener('click', () => {
+  document.getElementById('fileInput').click();
+});
+
+document.getElementById('fileInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const imported = JSON.parse(ev.target.result);
+      if (!Array.isArray(imported)) throw new Error('Invalid format');
+      imported.forEach(item => {
+        if (item.product_name && item.expiry_date) {
+          db.collection('products').add({
+            product_name: item.product_name,
+            batch_number: item.batch_number || '',
+            mfg_date: item.mfg_date || '',
+            expiry_date: item.expiry_date,
+            inward: item.inward || 0,
+            outward: item.outward || 0,
+            userId: currentUser.uid,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }
+      });
+      alert(`Imported ${imported.length} products successfully.`);
+    } catch (err) {
+      alert('Failed to import: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+document.getElementById('btn-export-csv').addEventListener('click', () => {
+  const headers = ['ID', 'Product Name', 'Batch Number', 'Mfg Date', 'Expiry Date', 'Months Left', 'Inward', 'Outward', 'Balance Stock'];
+  const rows = products.map(p => [
+    p.id,
+    p.product_name,
+    p.batch_number,
+    formatDate(p.mfg_date),
+    formatDate(p.expiry_date),
+    p.badgeText,
+    p.inward || 0,
+    p.outward || 0,
+    (p.inward || 0) - (p.outward || 0)
+  ]);
+  const csv = [headers.join(','), ...rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(','))].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'expiry_tracker_export.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById('btn-print-pdf').addEventListener('click', () => {
+  window.print();
+});
+
+document.getElementById('btn-reset-cache').addEventListener('click', () => {
+  if (confirm('Are you sure you want to reset all app data? This action cannot be undone.')) {
+    localStorage.clear();
+    location.reload();
+  }
+});
+
+if (localStorage.getItem('darkMode') === 'false') {
+  document.body.classList.remove('dark');
+}

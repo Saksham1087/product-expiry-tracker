@@ -6,7 +6,7 @@
   <title>Product Expiry Tracker</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="dark">
   <div id="loginOverlay" class="login-overlay">
     <div class="login-modal">
       <div class="login-modal-header">
@@ -35,6 +35,18 @@
         <button id="addProductBtn" class="btn btn-primary">+ Add Product</button>
       </div>
     </header>
+
+    <div class="flex flex-wrap items-center justify-end gap-3 p-3 bg-blue-600 rounded-lg shadow-sm text-white mb-6">
+      <span class="font-bold text-sm tracking-wide mr-auto">SMS</span>
+      <button id="themeToggle" class="bg-blue-500 hover:bg-blue-700 text-white font-medium text-xs px-3 py-1.5 rounded transition-all">🌙</button>
+      <button id="btn-export-json" class="bg-blue-500 hover:bg-blue-700 text-white font-medium text-xs px-3 py-1.5 rounded transition-all">Export Backup</button>
+      <button id="btn-import-json" class="bg-blue-500 hover:bg-blue-700 text-white font-medium text-xs px-3 py-1.5 rounded transition-all">Import Backup</button>
+      <button id="btn-export-csv" class="bg-blue-500 hover:bg-blue-700 text-white font-medium text-xs px-3 py-1.5 rounded transition-all">Export Excel/CSV</button>
+      <button id="btn-print-pdf" class="bg-blue-500 hover:bg-blue-700 text-white font-medium text-xs px-3 py-1.5 rounded transition-all">Print Table PDF</button>
+      <button id="btn-reset-cache" class="bg-red-500 hover:bg-red-600 text-white font-medium text-xs px-3 py-1.5 rounded transition-all">Reset App Cache</button>
+    </div>
+
+    <input type="file" id="fileInput" accept=".json" style="display:none">
 
     <section class="dashboard" id="dashboard">
       <div class="stat-card">
@@ -106,7 +118,7 @@
         </div>
       </div>
       <div class="table-wrapper">
-        <table>
+        <table id="inventory-table">
           <thead>
             <tr>
               <th>ID</th>
