@@ -119,6 +119,15 @@ function getTimeRemaining(expiryDateStr) {
   return { months, days, totalDays, text: `${months} months ${days} days` };
 }
 
+function evaluateStockInput(value) {
+  const cleaned = String(value).replace(/[^0-9+]/g, '');
+  if (!cleaned) return 0;
+  return cleaned.split('+').reduce((sum, part) => {
+    const num = parseInt(part, 10);
+    return sum + (isNaN(num) ? 0 : num);
+  }, 0);
+}
+
 function formatDate(dateStr) {
   const d = new Date(dateStr);
   const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -220,8 +229,8 @@ productForm.addEventListener('submit', async (e) => {
   const batch_number = document.getElementById('batch_number').value.trim();
   const mfg_date = document.getElementById('mfg_date').value;
   const expiry_date = document.getElementById('expiry_date').value;
-  const inward = Number(document.getElementById('inward').value) || 0;
-  const outward = Number(document.getElementById('outward').value) || 0;
+  const inward = evaluateStockInput(document.getElementById('inward').value);
+  const outward = evaluateStockInput(document.getElementById('outward').value);
   const id = productIdInput.value;
 
   if (!product_name || !batch_number || !mfg_date || !expiry_date) {
