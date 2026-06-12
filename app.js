@@ -305,7 +305,7 @@ searchInput.addEventListener('input', () => {
   renderTable(filtered);
 });
 
-document.getElementById('themeToggle').addEventListener('click', () => {
+document.getElementById('theme-toggle').addEventListener('click', () => {
   document.body.classList.toggle('dark');
   localStorage.setItem('darkMode', document.body.classList.contains('dark'));
 });

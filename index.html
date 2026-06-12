@@ -36,16 +36,6 @@
       </div>
     </header>
 
-    <div class="flex flex-wrap items-center justify-end gap-3 p-3 bg-blue-600 rounded-lg shadow-sm text-white mb-6">
-      <span class="font-bold text-sm tracking-wide mr-auto">SMS</span>
-      <button id="themeToggle" class="bg-blue-500 hover:bg-blue-700 text-white font-medium text-xs px-3 py-1.5 rounded transition-all">🌙</button>
-      <button id="btn-export-json" class="bg-blue-500 hover:bg-blue-700 text-white font-medium text-xs px-3 py-1.5 rounded transition-all">Export Backup</button>
-      <button id="btn-import-json" class="bg-blue-500 hover:bg-blue-700 text-white font-medium text-xs px-3 py-1.5 rounded transition-all">Import Backup</button>
-      <button id="btn-export-csv" class="bg-blue-500 hover:bg-blue-700 text-white font-medium text-xs px-3 py-1.5 rounded transition-all">Export Excel/CSV</button>
-      <button id="btn-print-pdf" class="bg-blue-500 hover:bg-blue-700 text-white font-medium text-xs px-3 py-1.5 rounded transition-all">Print Table PDF</button>
-      <button id="btn-reset-cache" class="bg-red-500 hover:bg-red-600 text-white font-medium text-xs px-3 py-1.5 rounded transition-all">Reset App Cache</button>
-    </div>
-
     <input type="file" id="fileInput" accept=".json" style="display:none">
 
     <section class="dashboard" id="dashboard">
@@ -61,6 +51,12 @@
         <div class="stat-info">
           <span class="stat-label">Expiring in 8.5 Months</span>
           <span class="stat-value" id="expiringSoon">0</span>
+        </div>
+      </div>
+      <div class="stat-card" style="justify-content: flex-end;">
+        <div class="flex items-center gap-2 text-sm font-medium">
+          <span class="font-bold text-base">SMS</span>
+          <button id="theme-toggle" class="text-xl hover:scale-110 transition-transform" title="Toggle Dark Mode">🌙</button>
         </div>
       </div>
     </section>
@@ -137,6 +133,26 @@
         </table>
       </div>
     </section>
+
+    <div class="max-w-4xl mx-auto mt-6 px-4">
+      <div class="flex flex-wrap items-center justify-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-200/80 shadow-sm">
+        <button id="btn-export-csv" class="flex items-center gap-2 bg-white hover:bg-gray-100 text-gray-700 text-xs font-semibold px-4 py-2.5 rounded-lg border border-gray-300 shadow-xs transition-all">
+          📄 Export Excel/CSV
+        </button>
+        <button id="btn-export-json" class="flex items-center gap-2 bg-white hover:bg-gray-100 text-gray-700 text-xs font-semibold px-4 py-2.5 rounded-lg border border-gray-300 shadow-xs transition-all">
+          📥 Export Backup (JSON)
+        </button>
+        <button id="btn-import-json" class="flex items-center gap-2 bg-white hover:bg-gray-100 text-gray-700 text-xs font-semibold px-4 py-2.5 rounded-lg border border-gray-300 shadow-xs transition-all">
+          📤 Import Backup
+        </button>
+        <button id="btn-print-pdf" class="flex items-center gap-2 bg-white hover:bg-gray-100 text-gray-700 text-xs font-semibold px-4 py-2.5 rounded-lg border border-gray-300 shadow-xs transition-all">
+          🖨️ Print Table PDF
+        </button>
+        <button id="btn-reset-cache" class="flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-semibold px-4 py-2.5 rounded-lg border border-red-200 shadow-xs transition-all ml-auto">
+          ⚠️ Reset App Cache
+        </button>
+      </div>
+    </div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
