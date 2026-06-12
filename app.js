@@ -120,12 +120,14 @@ function getTimeRemaining(expiryDateStr) {
 }
 
 function evaluateStockInput(value) {
-  const cleaned = String(value).replace(/[^0-9+]/g, '');
-  if (!cleaned) return 0;
-  return cleaned.split('+').reduce((sum, part) => {
-    const num = parseInt(part, 10);
-    return sum + (isNaN(num) ? 0 : num);
-  }, 0);
+    if (!value || typeof value !== 'string') return Number(value) || 0;
+
+    const sanitized = value.replace(/\s+/g, '');
+
+    return sanitized.split('+').reduce((total, part) => {
+        const num = parseFloat(part);
+        return total + (isNaN(num) ? 0 : num);
+    }, 0);
 }
 
 function formatDate(dateStr) {
