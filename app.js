@@ -85,16 +85,15 @@ function startListening() {
       snapshot.forEach(doc => {
         const data = doc.data();
         const today = new Date();
-        const { months, days, totalMonths } = computeTimeRemaining(today, data.expiry_date);
+        const { months, days, totalDays, text } = getTimeRemaining(data.expiry_date);
         products.push({
           id: doc.id,
           product_name: data.product_name,
           batch_number: data.batch_number,
           mfg_date: data.mfg_date,
           expiry_date: data.expiry_date,
-          months_left: totalMonths,
-          months,
-          days,
+          months_left: totalDays / 30,
+          badgeText: text,
           inward: data.inward || 0,
           outward: data.outward || 0
         });
@@ -106,20 +105,18 @@ function startListening() {
     });
 }
 
-function computeTimeRemaining(startDate, endDate) {
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-  start.setHours(0, 0, 0, 0);
-  end.setHours(0, 0, 0, 0);
-  let months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
-  let days = end.getDate() - start.getDate();
-  if (days < 0) {
-    months--;
-    const prevMonth = new Date(end.getFullYear(), end.getMonth(), 0);
-    days = prevMonth.getDate() + days;
+function getTimeRemaining(expiryDateStr) {
+  const expiry = new Date(expiryDateStr);
+  const now = new Date();
+  expiry.setHours(0, 0, 0, 0);
+  now.setHours(0, 0, 0, 0);
+  const totalDays = Math.floor((expiry - now) / (1000 * 60 * 60 * 24));
+  if (totalDays <= 0) {
+    return { months: -1, days: 0, totalDays, text: 'Expired' };
   }
-  const totalMonths = months + days / 30.0;
-  return { months, days, totalMonths };
+  const months = Math.floor(totalDays / 30);
+  const days = totalDays % 30;
+  return { months, days, totalDays, text: `${months} months ${days} days` };
 }
 
 function formatDate(dateStr) {
@@ -134,11 +131,6 @@ function getBadgeClass(months) {
   if (months < 0) return 'badge-danger';
   if (months <= 3) return 'badge-warning';
   return 'badge-safe';
-}
-
-function getBadgeLabel(months, days) {
-  if (months < 0) return 'Expired';
-  return `${months} months ${days} days`;
 }
 
 function updateDashboard() {
@@ -157,7 +149,6 @@ function renderTable(filteredProducts) {
   productsBody.innerHTML = data.map(p => {
     const rowClass = p.months_left < 8.5 ? 'class="alert-danger-row"' : '';
     const shortId = p.id.length > 8 ? p.id.substring(0, 8) + '...' : p.id;
-    const balance = p.inward - p.outward;
     return `
     <tr ${rowClass}>
       <td title="${escapeHtml(p.id)}">${escapeHtml(shortId)}</td>
@@ -165,10 +156,10 @@ function renderTable(filteredProducts) {
       <td>${escapeHtml(p.batch_number)}</td>
       <td>${formatDate(p.mfg_date)}</td>
       <td>${formatDate(p.expiry_date)}</td>
-      <td><span class="badge ${getBadgeClass(p.months_left)}">${getBadgeLabel(p.months, p.days)}</span></td>
-      <td>${p.inward}</td>
-      <td>${p.outward}</td>
-      <td>${balance}</td>
+      <td><span class="badge ${getBadgeClass(p.months_left)}">${p.badgeText}</span></td>
+      <td>${p.inward || 0}</td>
+      <td>${p.outward || 0}</td>
+      <td class="font-bold">${(p.inward || 0) - (p.outward || 0)}</td>
       <td>
         <button class="btn btn-edit" onclick="editProduct('${p.id}')">Edit</button>
         <button class="btn btn-danger" onclick="deleteProduct('${p.id}')">Delete</button>
@@ -229,8 +220,8 @@ productForm.addEventListener('submit', async (e) => {
   const batch_number = document.getElementById('batch_number').value.trim();
   const mfg_date = document.getElementById('mfg_date').value;
   const expiry_date = document.getElementById('expiry_date').value;
-  const inward = parseInt(document.getElementById('inward').value) || 0;
-  const outward = parseInt(document.getElementById('outward').value) || 0;
+  const inward = Number(document.getElementById('inward').value) || 0;
+  const outward = Number(document.getElementById('outward').value) || 0;
   const id = productIdInput.value;
 
   if (!product_name || !batch_number || !mfg_date || !expiry_date) {
@@ -302,71 +293,3 @@ searchInput.addEventListener('input', () => {
   );
   renderTable(filtered);
 });
-
-
-
-// ==========================================
-// EXPIRY TRACKER ENGINE: SAVE TO FIRESTORE
-// ==========================================
-async function saveNewExpiryRecord(projectName, inputExpiryDate, userAlertDays) {
-    try {
-        const targetExpiryDate = new Date(inputExpiryDate);
-        // Ensure the expiration time marks the absolute end of that calendar day
-        targetExpiryDate.setHours(23, 59, 59, 999);
-
-        // Using your initialized 'db' instance from line 12
-        const docRef = await db.collection("expiry_records").add({
-            name: projectName,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(), // Safe server clock
-            expiresAt: firebase.firestore.Timestamp.fromDate(targetExpiryDate), // Firestore Timestamp format
-            alertDays: parseInt(userAlertDays) || 7 
-        });
-
-        console.log("Record locked into cloud ledger successfully. ID:", docRef.id);
-        return true;
-    } catch (error) {
-        console.error("Error writing data matrix to Firebase:", error);
-        return false;
-    }
-}
-
-// ==========================================
-// EXPIRY TRACKER ENGINE: EVALUATE STATUS
-// ==========================================
-function evaluateProjectStatus(expiresAtFirebaseTimestamp, alertDaysWindow) {
-    const now = new Date();
-    
-    // Convert the Firestore Timestamp object safely back to a JavaScript Date object
-    const expiryDate = expiresAtFirebaseTimestamp.toDate(); 
-    const timeDifferenceMs = expiryDate - now;
-    const daysRemaining = Math.ceil(timeDifferenceMs / (1000 * 60 * 60 * 24));
-
-    if (daysRemaining <= 0) {
-        return {
-            label: "Expired",
-            badgeClass: "bg-red-100 text-red-800 border-red-300",
-            rowStyle: "opacity-70 bg-red-50/30",
-            daysText: `Expired ${Math.abs(daysRemaining)} days ago`
-        };
-    } 
-    
-    if (daysRemaining <= alertDaysWindow) {
-        return {
-            label: "Expiring Soon",
-            badgeClass: "bg-amber-100 text-amber-800 border-amber-300 animate-pulse",
-            rowStyle: "bg-amber-50/40",
-            daysText: `${daysRemaining} days left`
-        };
-    }
-
-    return {
-        label: "Active",
-        badgeClass: "bg-emerald-100 text-emerald-800 border-emerald-300",
-        rowStyle: "bg-white",
-        daysText: `${daysRemaining} days left`
-    };
-}
-
-// Make them accessible globally across your application
-window.saveNewExpiryRecord = saveNewExpiryRecord;
-window.evaluateProjectStatus = evaluateProjectStatus;
