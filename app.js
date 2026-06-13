@@ -165,8 +165,8 @@ function renderTable(filteredProducts) {
       <td title="${escapeHtml(p.id)}">${escapeHtml(shortId)}</td>
       <td><strong>${escapeHtml(p.product_name)}</strong></td>
       <td>${escapeHtml(p.batch_number)}</td>
-      <td>${formatDate(p.mfg_date)}</td>
-      <td>${formatDate(p.expiry_date)}</td>
+      <td>${(() => { const parts = p.mfg_date.split('-'); return `${parts[2]}/${parts[1]}/${parts[0]}`; })()}</td>
+      <td>${(() => { const parts = p.expiry_date.split('-'); return `${parts[2]}/${parts[1]}/${parts[0]}`; })()}</td>
       <td><span class="badge ${getBadgeClass(p.months_left)}">${p.badgeText}</span></td>
       <td>${p.inward || 0}</td>
       <td>${p.outward || 0}</td>
@@ -359,8 +359,8 @@ document.getElementById('btn-export-csv').addEventListener('click', () => {
     p.id,
     p.product_name,
     p.batch_number,
-    formatDate(p.mfg_date),
-    formatDate(p.expiry_date),
+    (() => { const parts = p.mfg_date.split('-'); return `${parts[2]}/${parts[1]}/${parts[0]}`; })(),
+    (() => { const parts = p.expiry_date.split('-'); return `${parts[2]}/${parts[1]}/${parts[0]}`; })(),
     p.badgeText,
     p.inward || 0,
     p.outward || 0,
