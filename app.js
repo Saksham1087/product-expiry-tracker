@@ -132,10 +132,10 @@ function evaluateStockInput(value) {
 
 function formatDate(dateStr) {
   const d = new Date(dateStr);
-  const day = String(d.getDate()).padStart(2, '0');
   const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
   const year = d.getFullYear();
-  return `${day}/${month}/${year}`;
+  return `${month}/${day}/${year}`;
 }
 
 function getBadgeClass(months) {
@@ -165,8 +165,8 @@ function renderTable(filteredProducts) {
       <td title="${escapeHtml(p.id)}">${escapeHtml(shortId)}</td>
       <td><strong>${escapeHtml(p.product_name)}</strong></td>
       <td>${escapeHtml(p.batch_number)}</td>
-      <td>${(() => { const parts = p.mfg_date.split('-'); return `${parts[2]}/${parts[1]}/${parts[0]}`; })()}</td>
-      <td>${(() => { const parts = p.expiry_date.split('-'); return `${parts[2]}/${parts[1]}/${parts[0]}`; })()}</td>
+      <td>${formatDate(p.mfg_date)}</td>
+      <td>${formatDate(p.expiry_date)}</td>
       <td><span class="badge ${getBadgeClass(p.months_left)}">${p.badgeText}</span></td>
       <td>${p.inward || 0}</td>
       <td>${p.outward || 0}</td>
@@ -229,21 +229,11 @@ productForm.addEventListener('submit', async (e) => {
 
   const product_name = document.getElementById('product_name').value.trim();
   const batch_number = document.getElementById('batch_number').value.trim();
-  let mfg_date = document.getElementById('mfg_date').value;
-  let expiry_date = document.getElementById('expiry_date').value;
+  const mfg_date = document.getElementById('mfg_date').value;
+  const expiry_date = document.getElementById('expiry_date').value;
   const inward = evaluateStockInput(document.getElementById('inward').value);
   const outward = evaluateStockInput(document.getElementById('outward').value);
   const id = productIdInput.value;
-
-  // Convert DD/MM/YYYY to YYYY-MM-DD for internal storage
-  if (mfg_date) {
-    const parts = mfg_date.split('/');
-    if (parts.length === 3) mfg_date = `${parts[2]}-${parts[1]}-${parts[0]}`;
-  }
-  if (expiry_date) {
-    const parts = expiry_date.split('/');
-    if (parts.length === 3) expiry_date = `${parts[2]}-${parts[1]}-${parts[0]}`;
-  }
 
   if (!product_name || !batch_number || !mfg_date || !expiry_date) {
     formError.textContent = 'All fields are required.';
@@ -369,8 +359,8 @@ document.getElementById('btn-export-csv').addEventListener('click', () => {
     p.id,
     p.product_name,
     p.batch_number,
-    (() => { const parts = p.mfg_date.split('-'); return `${parts[2]}/${parts[1]}/${parts[0]}`; })(),
-    (() => { const parts = p.expiry_date.split('-'); return `${parts[2]}/${parts[1]}/${parts[0]}`; })(),
+    formatDate(p.mfg_date),
+    formatDate(p.expiry_date),
     p.badgeText,
     p.inward || 0,
     p.outward || 0,
