@@ -6,7 +6,7 @@
   <title>Product Expiry Tracker</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="bg-[#0f172a] text-slate-100">
   <div id="loginOverlay" class="login-overlay">
     <div class="login-modal">
       <div class="login-modal-header">
@@ -129,22 +129,21 @@
       </div>
     </section>
 
-    <!-- Beautiful Dashboard Admin Utilities Grid Panel Layout -->
     <div class="w-full max-w-7xl mx-auto mt-8 px-4 pb-12">
-      <div class="flex flex-wrap items-center justify-center gap-4 p-4 bg-gray-900/50 rounded-xl border border-gray-800 shadow-xl backdrop-blur-xs">
-        <button id="btn-export-csv" class="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold px-4 py-3 rounded-lg border border-gray-700 shadow-md transition-all duration-200 cursor-pointer focus:outline-hidden">
+      <div class="flex flex-wrap items-center justify-center gap-3 p-4 bg-[#1e293b]/90 dark:bg-slate-900 rounded-xl border border-slate-700/50 shadow-xl">
+        <button id="btn-export-csv" class="flex items-center gap-2 bg-[#334155] hover:bg-slate-600 text-slate-100 text-xs font-semibold px-4 py-2.5 rounded-lg border border-slate-600 shadow-sm transition-all cursor-pointer">
           📄 Export Excel/CSV
         </button>
-        <button id="btn-export-json" class="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold px-4 py-3 rounded-lg border border-gray-700 shadow-md transition-all duration-200 cursor-pointer focus:outline-hidden">
+        <button id="btn-export-json" class="flex items-center gap-2 bg-[#334155] hover:bg-slate-600 text-slate-100 text-xs font-semibold px-4 py-2.5 rounded-lg border border-slate-600 shadow-sm transition-all cursor-pointer">
           📥 Export Backup (JSON)
         </button>
-        <button id="btn-import-json" class="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold px-4 py-3 rounded-lg border border-gray-700 shadow-md transition-all duration-200 cursor-pointer focus:outline-hidden">
+        <button id="btn-import-json" class="flex items-center gap-2 bg-[#334155] hover:bg-slate-600 text-slate-100 text-xs font-semibold px-4 py-2.5 rounded-lg border border-slate-600 shadow-sm transition-all cursor-pointer">
           📤 Import Backup
         </button>
-        <button id="btn-print-pdf" class="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold px-4 py-3 rounded-lg border border-gray-700 shadow-md transition-all duration-200 cursor-pointer focus:outline-hidden">
+        <button id="btn-print-pdf" class="flex items-center gap-2 bg-[#334155] hover:bg-slate-600 text-slate-100 text-xs font-semibold px-4 py-2.5 rounded-lg border border-slate-600 shadow-sm transition-all cursor-pointer">
           🖨️ Print Table PDF
         </button>
-        <button id="btn-reset-cache" class="flex items-center gap-2 bg-red-950/40 hover:bg-red-900/60 text-red-400 text-xs font-semibold px-4 py-3 rounded-lg border border-red-900/40 shadow-md transition-all duration-200 cursor-pointer md:ml-auto focus:outline-hidden">
+        <button id="btn-reset-cache" class="flex items-center gap-2 bg-red-950/60 hover:bg-red-900/80 text-red-300 text-xs font-semibold px-4 py-2.5 rounded-lg border border-red-900/50 shadow-sm transition-all cursor-pointer md:ml-auto">
           ⚠️ Reset App Cache
         </button>
       </div>

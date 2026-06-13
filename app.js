@@ -305,30 +305,41 @@ searchInput.addEventListener('input', () => {
   renderTable(filtered);
 });
 
-// Robust Dark/Light Mode Theme Toggle Logic Engine
-const themeToggleBtn = document.getElementById('theme-toggle');
-if (themeToggleBtn) {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    if (savedTheme === 'dark') {
-        document.documentElement.classList.add('dark');
-        themeToggleBtn.textContent = '🌙';
-    } else {
-        document.documentElement.classList.remove('dark');
-        themeToggleBtn.textContent = '☀️';
+// Complete Document Root Dark/Light Toggle Engine
+document.addEventListener('DOMContentLoaded', () => {
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    
+    // Default system initialization
+    if (!localStorage.getItem('theme')) {
+        localStorage.setItem('theme', 'dark');
     }
-
-    themeToggleBtn.addEventListener('click', () => {
-        if (document.documentElement.classList.contains('dark')) {
-            document.documentElement.classList.remove('dark');
-            localStorage.setItem('theme', 'light');
-            themeToggleBtn.textContent = '☀️';
-        } else {
+    
+    const applyTheme = (theme) => {
+        if (theme === 'dark') {
             document.documentElement.classList.add('dark');
-            localStorage.setItem('theme', 'dark');
-            themeToggleBtn.textContent = '🌙';
+            document.body.classList.add('bg-[#0f172a]', 'text-slate-100');
+            document.body.classList.remove('bg-slate-50', 'text-slate-900');
+            if(themeToggleBtn) themeToggleBtn.textContent = '🌙';
+        } else {
+            document.documentElement.classList.remove('dark');
+            document.body.classList.add('bg-slate-50', 'text-slate-900');
+            document.body.classList.remove('bg-[#0f172a]', 'text-slate-100');
+            if(themeToggleBtn) themeToggleBtn.textContent = '☀️';
         }
-    });
-}
+    };
+
+    // Apply active preference on load
+    applyTheme(localStorage.getItem('theme'));
+
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = localStorage.getItem('theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('theme', newTheme);
+            applyTheme(newTheme);
+        });
+    }
+});
 
 document.getElementById('btn-export-json').addEventListener('click', () => {
   const data = JSON.stringify(products, null, 2);
