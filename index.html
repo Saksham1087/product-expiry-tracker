@@ -111,7 +111,6 @@
         <table id="inventory-table">
           <thead>
             <tr>
-              <th>ID</th>
               <th>Product Name</th>
               <th>Batch Number</th>
               <th>Mfg Date</th>
@@ -142,6 +141,22 @@
         <button id="btn-print-pdf" class="custom-btn btn-secondary">
           <span class="btn-icon">🖨️</span> Print Table PDF
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notes Side Canvas Drawer -->
+  <div id="notesCanvas" class="notes-canvas-overlay">
+    <div class="notes-canvas">
+      <div class="notes-canvas-header">
+        <h3 id="notesCanvasTitle">Notes</h3>
+        <button id="notesCanvasClose" class="notes-canvas-close">&times;</button>
+      </div>
+      <div class="notes-canvas-body">
+        <textarea id="notesTextarea" placeholder="Write your notes here..."></textarea>
+      </div>
+      <div class="notes-canvas-footer">
+        <button id="notesSaveBtn" class="btn btn-primary">Save Note</button>
       </div>
     </div>
   </div>

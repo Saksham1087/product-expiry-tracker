@@ -86,6 +86,7 @@ function startListening() {
         const data = doc.data();
         const today = new Date();
         const { months, days, totalDays, text } = getTimeRemaining(data.expiry_date);
+        const savedNote = localStorage.getItem('productNote_' + doc.id) || '';
         products.push({
           id: doc.id,
           product_name: data.product_name,
@@ -95,7 +96,8 @@ function startListening() {
           months_left: totalDays / 30,
           badgeText: text,
           inward: data.inward || 0,
-          outward: data.outward || 0
+          outward: data.outward || 0,
+          notes: savedNote
         });
       });
       updateDashboard();
@@ -154,15 +156,13 @@ function updateDashboard() {
 function renderTable(filteredProducts) {
   const data = filteredProducts || products;
   if (data.length === 0) {
-    productsBody.innerHTML = '<tr><td colspan="10"><div class="empty-state"><p>No products found. Add your first product!</p></div></td></tr>';
+    productsBody.innerHTML = '<tr><td colspan="9"><div class="empty-state"><p>No products found. Add your first product!</p></div></td></tr>';
     return;
   }
   productsBody.innerHTML = data.map(p => {
     const rowClass = p.months_left < 8.5 ? 'class="alert-danger-row"' : '';
-    const shortId = p.id.length > 8 ? p.id.substring(0, 8) + '...' : p.id;
     return `
     <tr ${rowClass}>
-      <td title="${escapeHtml(p.id)}">${escapeHtml(shortId)}</td>
       <td><strong>${escapeHtml(p.product_name)}</strong></td>
       <td>${escapeHtml(p.batch_number)}</td>
       <td>${formatDate(p.mfg_date)}</td>
@@ -174,6 +174,7 @@ function renderTable(filteredProducts) {
       <td>
         <button class="btn btn-edit" onclick="editProduct('${p.id}')">Edit</button>
         <button class="btn btn-danger" onclick="deleteProduct('${p.id}')">Delete</button>
+        <button class="btn btn-notes" onclick="openNoteCanvas('${p.id}')">Notes</button>
       </td>
     </tr>`;
   }).join('');
@@ -380,4 +381,35 @@ document.getElementById('btn-print-pdf').addEventListener('click', () => {
   window.print();
 });
 
+// Notes Canvas State
+let activeNoteId = null;
+
+function openNoteCanvas(productId) {
+  activeNoteId = productId;
+  const product = products.find(p => p.id === productId);
+  if (!product) return;
+  document.getElementById('notesCanvasTitle').textContent = 'Notes - ' + escapeHtml(product.product_name);
+  document.getElementById('notesTextarea').value = product.notes || '';
+  document.getElementById('notesCanvas').classList.add('active');
+}
+
+function closeNoteCanvas() {
+  document.getElementById('notesCanvas').classList.remove('active');
+  activeNoteId = null;
+}
+
+document.getElementById('notesCanvasClose').addEventListener('click', closeNoteCanvas);
+
+document.getElementById('notesCanvas').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closeNoteCanvas();
+});
+
+document.getElementById('notesSaveBtn').addEventListener('click', () => {
+  if (!activeNoteId) return;
+  const text = document.getElementById('notesTextarea').value;
+  localStorage.setItem('productNote_' + activeNoteId, text);
+  const product = products.find(p => p.id === activeNoteId);
+  if (product) product.notes = text;
+  closeNoteCanvas();
+});
 
