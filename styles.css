@@ -131,6 +131,17 @@ header {
 .grid-cols-1 { grid-template-columns: repeat(1, 1fr); }
 .gap-6 { gap: 24px; }
 
+#dashboard {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+@media (min-width: 768px) {
+  #dashboard {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 .stat-card {
   display: flex;
   align-items: center;
@@ -572,23 +583,8 @@ tbody tr:hover { background: #f1f5f9; }
     background: #30363d;
 }
 
-/* Warning Reset App Cache button with dark red tint */
-.custom-btn.btn-danger {
-    background: rgba(218, 54, 51, 0.15);
-    color: #f85149;
-    border: 1px solid rgba(218, 54, 51, 0.3);
-    margin-left: auto;
-}
-.custom-btn.btn-danger:hover {
-    background: rgba(218, 54, 51, 0.25);
-}
-
 /* Responsive: stack buttons full-width on small screens */
 @media (max-width: 768px) {
-    .custom-btn.btn-danger {
-        margin-left: 0;
-        width: 100%;
-    }
     .custom-btn {
         width: 100%;
         justify-content: center;

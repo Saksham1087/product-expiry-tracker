@@ -380,11 +380,4 @@ document.getElementById('btn-print-pdf').addEventListener('click', () => {
   window.print();
 });
 
-document.getElementById('btn-reset-cache').addEventListener('click', () => {
-  if (confirm('Are you sure you want to reset all app data? This action cannot be undone.')) {
-    localStorage.clear();
-    location.reload();
-  }
-});
-
 
