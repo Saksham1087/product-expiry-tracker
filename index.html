@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product Expiry Tracker</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-[#0f172a] text-slate-100">
+<body>
   <div id="loginOverlay" class="login-overlay">
     <div class="login-modal">
       <div class="login-modal-header">
@@ -32,7 +32,6 @@
           <span id="userName" class="user-name"></span>
           <button id="logoutBtn" class="btn btn-secondary btn-sm">Logout</button>
         </div>
-        <button id="theme-toggle" class="text-xl p-2 hover:scale-110 transition-transform cursor-pointer focus:outline-hidden">🌙</button>
         <button id="addProductBtn" class="btn btn-primary">+ Add Product</button>
       </div>
     </header>
@@ -129,22 +128,22 @@
       </div>
     </section>
 
-    <div class="w-full max-w-7xl mx-auto mt-8 px-4 pb-12">
-      <div class="flex flex-wrap items-center justify-center gap-3 p-4 bg-[#1e293b]/90 dark:bg-slate-900 rounded-xl border border-slate-700/50 shadow-xl">
-        <button id="btn-export-csv" class="flex items-center gap-2 bg-[#334155] hover:bg-slate-600 text-slate-100 text-xs font-semibold px-4 py-2.5 rounded-lg border border-slate-600 shadow-sm transition-all cursor-pointer">
-          📄 Export Excel/CSV
+    <div class="custom-utility-wrapper">
+      <div class="custom-utility-card">
+        <button id="btn-export-csv" class="custom-btn btn-secondary">
+          <span class="btn-icon">📄</span> Export Excel/CSV
         </button>
-        <button id="btn-export-json" class="flex items-center gap-2 bg-[#334155] hover:bg-slate-600 text-slate-100 text-xs font-semibold px-4 py-2.5 rounded-lg border border-slate-600 shadow-sm transition-all cursor-pointer">
-          📥 Export Backup (JSON)
+        <button id="btn-export-json" class="custom-btn btn-secondary">
+          <span class="btn-icon">📥</span> Export Backup (JSON)
         </button>
-        <button id="btn-import-json" class="flex items-center gap-2 bg-[#334155] hover:bg-slate-600 text-slate-100 text-xs font-semibold px-4 py-2.5 rounded-lg border border-slate-600 shadow-sm transition-all cursor-pointer">
-          📤 Import Backup
+        <button id="btn-import-json" class="custom-btn btn-secondary">
+          <span class="btn-icon">📤</span> Import Backup
         </button>
-        <button id="btn-print-pdf" class="flex items-center gap-2 bg-[#334155] hover:bg-slate-600 text-slate-100 text-xs font-semibold px-4 py-2.5 rounded-lg border border-slate-600 shadow-sm transition-all cursor-pointer">
-          🖨️ Print Table PDF
+        <button id="btn-print-pdf" class="custom-btn btn-secondary">
+          <span class="btn-icon">🖨️</span> Print Table PDF
         </button>
-        <button id="btn-reset-cache" class="flex items-center gap-2 bg-red-950/60 hover:bg-red-900/80 text-red-300 text-xs font-semibold px-4 py-2.5 rounded-lg border border-red-900/50 shadow-sm transition-all cursor-pointer md:ml-auto">
-          ⚠️ Reset App Cache
+        <button id="btn-reset-cache" class="custom-btn btn-danger">
+          <span class="btn-icon">⚠️</span> Reset App Cache
         </button>
       </div>
     </div>
