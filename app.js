@@ -343,6 +343,10 @@ document.getElementById('fileInput').addEventListener('change', (e) => {
             outward: item.outward || 0,
             userId: currentUser.uid,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          }).then(docRef => {
+            if (item.notes) {
+              localStorage.setItem('productNote_' + docRef.id, item.notes);
+            }
           });
         }
       });
