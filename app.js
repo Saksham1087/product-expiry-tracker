@@ -305,10 +305,30 @@ searchInput.addEventListener('input', () => {
   renderTable(filtered);
 });
 
-document.getElementById('theme-toggle').addEventListener('click', () => {
-  document.body.classList.toggle('dark');
-  localStorage.setItem('darkMode', document.body.classList.contains('dark'));
-});
+// Robust Dark/Light Mode Theme Toggle Logic Engine
+const themeToggleBtn = document.getElementById('theme-toggle');
+if (themeToggleBtn) {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+        themeToggleBtn.textContent = '🌙';
+    } else {
+        document.documentElement.classList.remove('dark');
+        themeToggleBtn.textContent = '☀️';
+    }
+
+    themeToggleBtn.addEventListener('click', () => {
+        if (document.documentElement.classList.contains('dark')) {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+            themeToggleBtn.textContent = '☀️';
+        } else {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+            themeToggleBtn.textContent = '🌙';
+        }
+    });
+}
 
 document.getElementById('btn-export-json').addEventListener('click', () => {
   const data = JSON.stringify(products, null, 2);
@@ -390,6 +410,4 @@ document.getElementById('btn-reset-cache').addEventListener('click', () => {
   }
 });
 
-if (localStorage.getItem('darkMode') === 'false') {
-  document.body.classList.remove('dark');
-}
+

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product Expiry Tracker</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body class="dark">
+<body>
   <div id="loginOverlay" class="login-overlay">
     <div class="login-modal">
       <div class="login-modal-header">
@@ -32,7 +32,7 @@
           <span id="userName" class="user-name"></span>
           <button id="logoutBtn" class="btn btn-secondary btn-sm">Logout</button>
         </div>
-        <span id="theme-toggle" class="text-xl p-2 hover:scale-110 transition-transform cursor-pointer focus:outline-none" title="Toggle Dark Mode">🌙</span>
+        <button id="theme-toggle" class="text-xl p-2 hover:scale-110 transition-transform cursor-pointer focus:outline-hidden">🌙</button>
         <button id="addProductBtn" class="btn btn-primary">+ Add Product</button>
       </div>
     </header>
@@ -129,21 +129,22 @@
       </div>
     </section>
 
-    <div class="max-w-7xl mx-auto mt-6 px-4 pb-8">
-      <div class="flex flex-wrap items-center justify-center gap-3 p-4 bg-gray-900/40 rounded-xl border border-gray-800 shadow-sm">
-        <button id="btn-export-csv" class="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold px-4 py-2.5 rounded-lg border border-gray-700 shadow-sm transition-all cursor-pointer">
+    <!-- Beautiful Dashboard Admin Utilities Grid Panel Layout -->
+    <div class="w-full max-w-7xl mx-auto mt-8 px-4 pb-12">
+      <div class="flex flex-wrap items-center justify-center gap-4 p-4 bg-gray-900/50 rounded-xl border border-gray-800 shadow-xl backdrop-blur-xs">
+        <button id="btn-export-csv" class="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold px-4 py-3 rounded-lg border border-gray-700 shadow-md transition-all duration-200 cursor-pointer focus:outline-hidden">
           📄 Export Excel/CSV
         </button>
-        <button id="btn-export-json" class="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold px-4 py-2.5 rounded-lg border border-gray-700 shadow-sm transition-all cursor-pointer">
+        <button id="btn-export-json" class="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold px-4 py-3 rounded-lg border border-gray-700 shadow-md transition-all duration-200 cursor-pointer focus:outline-hidden">
           📥 Export Backup (JSON)
         </button>
-        <button id="btn-import-json" class="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold px-4 py-2.5 rounded-lg border border-gray-700 shadow-sm transition-all cursor-pointer">
+        <button id="btn-import-json" class="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold px-4 py-3 rounded-lg border border-gray-700 shadow-md transition-all duration-200 cursor-pointer focus:outline-hidden">
           📤 Import Backup
         </button>
-        <button id="btn-print-pdf" class="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold px-4 py-2.5 rounded-lg border border-gray-700 shadow-sm transition-all cursor-pointer">
+        <button id="btn-print-pdf" class="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold px-4 py-3 rounded-lg border border-gray-700 shadow-md transition-all duration-200 cursor-pointer focus:outline-hidden">
           🖨️ Print Table PDF
         </button>
-        <button id="btn-reset-cache" class="flex items-center gap-2 bg-red-950/40 hover:bg-red-900/60 text-red-400 text-xs font-semibold px-4 py-2.5 rounded-lg border border-red-900/50 shadow-sm transition-all cursor-pointer sm:ml-auto">
+        <button id="btn-reset-cache" class="flex items-center gap-2 bg-red-950/40 hover:bg-red-900/60 text-red-400 text-xs font-semibold px-4 py-3 rounded-lg border border-red-900/40 shadow-md transition-all duration-200 cursor-pointer md:ml-auto focus:outline-hidden">
           ⚠️ Reset App Cache
         </button>
       </div>
