@@ -229,11 +229,21 @@ productForm.addEventListener('submit', async (e) => {
 
   const product_name = document.getElementById('product_name').value.trim();
   const batch_number = document.getElementById('batch_number').value.trim();
-  const mfg_date = document.getElementById('mfg_date').value;
-  const expiry_date = document.getElementById('expiry_date').value;
+  let mfg_date = document.getElementById('mfg_date').value;
+  let expiry_date = document.getElementById('expiry_date').value;
   const inward = evaluateStockInput(document.getElementById('inward').value);
   const outward = evaluateStockInput(document.getElementById('outward').value);
   const id = productIdInput.value;
+
+  // Convert DD/MM/YYYY to YYYY-MM-DD for internal storage
+  if (mfg_date) {
+    const parts = mfg_date.split('/');
+    if (parts.length === 3) mfg_date = `${parts[2]}-${parts[1]}-${parts[0]}`;
+  }
+  if (expiry_date) {
+    const parts = expiry_date.split('/');
+    if (parts.length === 3) expiry_date = `${parts[2]}-${parts[1]}-${parts[0]}`;
+  }
 
   if (!product_name || !batch_number || !mfg_date || !expiry_date) {
     formError.textContent = 'All fields are required.';
