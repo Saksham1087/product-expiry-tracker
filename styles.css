@@ -471,29 +471,7 @@ tbody td {
   font-size: 15px;
 }
 
-body {
-  background: #f5f7fa;
-  color: #1f2937;
-}
-.container { background: transparent; }
-header h1 { color: #1f2937; }
-.stat-card,
-.table-section,
-.modal,
-.login-modal { background: #ffffff; border-color: #e2e8f0; }
-.stat-card.warning { border-color: #e2e8f0; }
-.stat-value { color: #1f2937; }
-thead th { background: #f8fafc; color: #64748b; border-color: #e2e8f0; }
-tbody td { color: #1f2937; }
-tbody tr { border-color: #e2e8f0; }
-tbody tr:hover { background: #f1f5f9; }
-.search-bar input,
-.form-group input { background: #ffffff; border-color: #d1d5db; color: #1f2937; }
-.form-group label { color: #64748b; }
-.btn-secondary { background: #e2e8f0; color: #1f2937; border-color: #cbd5e1; }
-.user-name { color: #475569; }
-.alert-danger-row { background: rgba(218, 54, 51, 0.06); }
-.alert-danger-row:hover { background: rgba(218, 54, 51, 0.12); }
+
 
 @media (min-width: 768px) {
   .md\:grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
