@@ -156,13 +156,14 @@ function updateDashboard() {
 function renderTable(filteredProducts) {
   const data = filteredProducts || products;
   if (data.length === 0) {
-    productsBody.innerHTML = '<tr><td colspan="9"><div class="empty-state"><p>No products found. Add your first product!</p></div></td></tr>';
+    productsBody.innerHTML = '<tr><td colspan="10"><div class="empty-state"><p>No products found. Add your first product!</p></div></td></tr>';
     return;
   }
   productsBody.innerHTML = data.map(p => {
     const rowClass = p.months_left < 8.5 ? 'class="alert-danger-row"' : '';
     return `
     <tr ${rowClass}>
+      <td><input type="checkbox" class="product-checkbox" data-product-id="${escapeHtml(p.id)}"></td>
       <td><strong>${escapeHtml(p.product_name)}</strong></td>
       <td>${escapeHtml(p.batch_number)}</td>
       <td>${formatDate(p.mfg_date)}</td>
@@ -379,6 +380,51 @@ document.getElementById('btn-export-csv').addEventListener('click', () => {
 
 document.getElementById('btn-print-pdf').addEventListener('click', () => {
   window.print();
+});
+
+// Select All / Deselect All
+function toggleSelectAll(masterCheckbox) {
+  const checkboxes = document.querySelectorAll('.product-checkbox');
+  checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
+}
+
+// Print Selected
+document.getElementById('btn-print-selected').addEventListener('click', () => {
+  const checked = document.querySelectorAll('.product-checkbox:checked');
+  if (checked.length === 0) { alert('Please select at least one product to print.'); return; }
+  const allRows = document.querySelectorAll('#productsBody tr');
+  allRows.forEach(row => {
+    const cb = row.querySelector('.product-checkbox');
+    if (!cb || !cb.checked) {
+      row.style.display = 'none';
+    }
+  });
+  window.print();
+  allRows.forEach(row => row.style.display = '');
+});
+
+// Download Selected as Image
+document.getElementById('btn-download-image').addEventListener('click', () => {
+  const checked = document.querySelectorAll('.product-checkbox:checked');
+  if (checked.length === 0) { alert('Please select at least one product to download.'); return; }
+  const allRows = document.querySelectorAll('#productsBody tr');
+  allRows.forEach(row => {
+    const cb = row.querySelector('.product-checkbox');
+    if (!cb || !cb.checked) {
+      row.style.display = 'none';
+    }
+  });
+  const table = document.getElementById('inventory-table');
+  html2canvas(table, { backgroundColor: '#161b22', scale: 2 }).then(canvas => {
+    const link = document.createElement('a');
+    link.download = 'selected-products.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    allRows.forEach(row => row.style.display = '');
+  }).catch(() => {
+    allRows.forEach(row => row.style.display = '');
+    alert('Failed to generate image.');
+  });
 });
 
 // Notes Canvas State

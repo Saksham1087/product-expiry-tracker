@@ -111,6 +111,7 @@
         <table id="inventory-table">
           <thead>
             <tr>
+              <th><input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)"></th>
               <th>Product Name</th>
               <th>Batch Number</th>
               <th>Mfg Date</th>
@@ -141,6 +142,12 @@
         <button id="btn-print-pdf" class="custom-btn btn-secondary">
           <span class="btn-icon">🖨️</span> Print Table PDF
         </button>
+        <button id="btn-print-selected" class="custom-btn btn-secondary">
+          <span class="btn-icon">🖨️</span> Print Selected (PDF)
+        </button>
+        <button id="btn-download-image" class="custom-btn btn-secondary">
+          <span class="btn-icon">🖼️</span> Download Selected as Image
+        </button>
       </div>
     </div>
   </div>
@@ -164,6 +171,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

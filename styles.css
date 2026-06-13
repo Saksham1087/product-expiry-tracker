@@ -404,6 +404,18 @@ header {
   overflow-x: auto;
 }
 
+#inventory-table th:first-child,
+#inventory-table td:first-child {
+  width: 40px;
+  text-align: center;
+  vertical-align: middle;
+}
+#inventory-table th:first-child input,
+#inventory-table td:first-child input {
+  accent-color: #58a6ff;
+  cursor: pointer;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
